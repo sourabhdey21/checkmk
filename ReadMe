@@ -1,0 +1,91 @@
+#Add Extra Packages for Enterprise Linux 7 (EPEL) Repository 
+yum install epel-release -y
+
+#Install open vm tools 
+yum install -y open-vm-tools
+
+#Disabled SELinux
+vi /etc/sysconfig/selinux 
+	SELINUX=disabled
+  
+#Disable Firewalld
+systemctl disable firewalld
+
+
+Install NTP
+yum install ntp
+systemctl start ntpd
+systemctl enable ntpd
+
+#Install wget 
+yum install wget -y
+
+Install checkmk binaries
+cd /tmp
+wget https://download.checkmk.com/checkmk/2.1.0p18/check-mk-free-2.1.0p18-el7-38.x86_64.rpm --no-check-certificate
+
+Install Checkmk binaries
+yum install check-mk-free-2.1.0p18-el7-38.x86_64.rpm -y
+
+Check the version
+omd version
+OMD - Open Monitoring Distribution Version 2.1.0p18.cfe
+
+Create a site for check mk dashboard
+omd create checkmk
+
+Output:
+
+Adding /opt/omd/sites/checkmk/tmp to /etc/fstab.
+Creating temporary filesystem /omd/sites/checkmk/tmp...OK
+Updating core configuration...
+Generating configuration for core (type cmc)...
+Starting full compilation for all hosts Creating global helper config...OK
+ Creating cmc protobuf configuration...OK
+Executing post-create script "01_create-sample-config.py"...OK
+Restarting Apache...OK
+Created new site checkmk with version 2.1.0p18.cfe.
+
+  The site can be started with omd start checkmk.
+  The default web UI is available at http://localhost.localdomain/checkmk/
+
+  The admin user for the web applications is cmkadmin with password: aIrgOUig
+  For command line administration of the site, log in with 'omd su checkmk'.
+  After logging in, you can change the password for cmkadmin with 'cmk-passwd cmkadmin'.
+  
+  Change the checkmk admin user password
+  
+ su - checkmk
+ 
+ htpasswd -m ~/etc/htpasswd cmkadmin
+  
+ New password:
+ Re-type new password:
+ Updating password for user cmkadmin
+ 
+ Change the user / root
+ 
+ omd start checkmk
+ 
+ output:
+ Temporary filesystem already mounted
+Starting agent-receiver...OK
+Starting mkeventd...OK
+Starting liveproxyd...OK
+Starting mknotifyd...OK
+Starting rrdcached...OK
+Starting cmc...OK
+Starting apache...OK
+Starting dcd...OK
+Starting redis...OK
+Initializing Crontab...OK
+
+
+Access the GUI 
+
+http://X.X.X.X./checkmk
+
+
+
+
+
